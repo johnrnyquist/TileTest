@@ -86,35 +86,79 @@ class GameScene: SKScene {
         mudMap.enableAutomapping = true
         mudMap.fill(with: mudGroup)
 
-        tileMap.setTileGroup(grassGroup, forColumn: 0, row: 0)
-        tileMap.setTileGroup(grassGroup, forColumn: 1, row: 2)
-        tileMap.setTileGroup(grassGroup, forColumn: 2, row: 2)
-        tileMap.setTileGroup(grassGroup, forColumn: 2, row: 3)
-        tileMap.setTileGroup(grassGroup, forColumn: 3, row: 3)
-        tileMap.setTileGroup(grassGroup, forColumn: 4, row: 4)
-        tileMap.setTileGroup(grassGroup, forColumn: 4, row: 5)
-        tileMap.setTileGroup(grassGroup, forColumn: 5, row: 5)
-        tileMap.setTileGroup(grassGroup, forColumn: 6, row: 5)
-        tileMap.setTileGroup(grassGroup, forColumn: 6, row: 6)
-        tileMap.setTileGroup(grassGroup, forColumn: 6, row: 7)
-        tileMap.setTileGroup(grassGroup, forColumn: 7, row: 6)
-        tileMap.setTileGroup(grassGroup, forColumn: 8, row: 3)
-        tileMap.setTileGroup(grassGroup, forColumn: 8, row: 6)
-        tileMap.setTileGroup(grassGroup, forColumn: 9, row: 6)
-        tileMap.setTileGroup(grassGroup, forColumn: 10, row: 6)
-        tileMap.setTileGroup(grassGroup, forColumn: 11, row: 6)
-        tileMap.setTileGroup(grassGroup, forColumn: 12, row: 6)
-        tileMap.setTileGroup(grassGroup, forColumn: 12, row: 7)
-        tileMap.setTileGroup(grassGroup, forColumn: 12, row: 8)
-        tileMap.setTileGroup(grassGroup, forColumn: 12, row: 9)
-        tileMap.setTileGroup(grassGroup, forColumn: 12, row: 10)
-        tileMap.setTileGroup(grassGroup, forColumn: 13, row: 6)
-        tileMap.setTileGroup(grassGroup, forColumn: 14, row: 6)
-        tileMap.setTileGroup(grassGroup, forColumn: 14, row: 11)
-        tileMap.setTileGroup(grassGroup, forColumn: 15, row: 6)
-        tileMap.setTileGroup(grassGroup, forColumn: 15, row: 11)
+//        tileMap.setTileGroup(grassGroup, forColumn: 0, row: 0)
+//        tileMap.setTileGroup(grassGroup, forColumn: 1, row: 2)
+//        tileMap.setTileGroup(grassGroup, forColumn: 2, row: 2)
+//        tileMap.setTileGroup(grassGroup, forColumn: 2, row: 3)
+//        tileMap.setTileGroup(grassGroup, forColumn: 3, row: 3)
+//        tileMap.setTileGroup(grassGroup, forColumn: 4, row: 4)
+//        tileMap.setTileGroup(grassGroup, forColumn: 4, row: 5)
+//        tileMap.setTileGroup(grassGroup, forColumn: 5, row: 5)
+//        tileMap.setTileGroup(grassGroup, forColumn: 6, row: 5)
+//        tileMap.setTileGroup(grassGroup, forColumn: 6, row: 6)
+//        tileMap.setTileGroup(grassGroup, forColumn: 6, row: 7)
+//        tileMap.setTileGroup(grassGroup, forColumn: 7, row: 6)
+//        tileMap.setTileGroup(grassGroup, forColumn: 8, row: 3)
+//        tileMap.setTileGroup(grassGroup, forColumn: 8, row: 6)
+//        tileMap.setTileGroup(grassGroup, forColumn: 9, row: 6)
+//        tileMap.setTileGroup(grassGroup, forColumn: 10, row: 6)
+//        tileMap.setTileGroup(grassGroup, forColumn: 11, row: 6)
+//        tileMap.setTileGroup(grassGroup, forColumn: 12, row: 6)
+//        tileMap.setTileGroup(grassGroup, forColumn: 12, row: 7)
+//        tileMap.setTileGroup(grassGroup, forColumn: 12, row: 8)
+//        tileMap.setTileGroup(grassGroup, forColumn: 12, row: 9)
+//        tileMap.setTileGroup(grassGroup, forColumn: 12, row: 10)
+//        tileMap.setTileGroup(grassGroup, forColumn: 13, row: 6)
+//        tileMap.setTileGroup(grassGroup, forColumn: 14, row: 6)
+//        tileMap.setTileGroup(grassGroup, forColumn: 14, row: 11)
+//        tileMap.setTileGroup(grassGroup, forColumn: 15, row: 6)
+//        tileMap.setTileGroup(grassGroup, forColumn: 15, row: 11)
+
+        for _ in 1...20 {
+            tileMap.setTileGroup(grassGroup,
+                                 forColumn: Int.random(in: 0...15),
+                                 row: Int.random(in: 0...11))
+        }
 
         self.addChild(mudMap)
         self.addChild(tileMap)
+
+        for row in 0..<12 {
+            for col in 0..<16 {
+                let w = 64
+                let shape = SKShapeNode(rectOf: CGSize(width: w,
+                                                       height: w))
+                shape.lineWidth = 1
+
+                shape.position = CGPoint(x: 0 + col * w + 32,
+                                         y: 0 + row * w + 32)
+                addChild(shape)
+
+                let label = SKLabelNode(text: "\(col), \(row)")
+                label.position = shape.position
+                label.fontSize = 12
+                label.fontName = "Helvetica"
+                label.fontColor = .white
+                addChild(label)
+            }
+        }
+
+        let waitAction = SKAction.wait(forDuration: 5);
+        let runAction = SKAction.run {
+            tileMap.fill(with: mudGroup)
+            for _ in 1...20 {
+                tileMap.setTileGroup(grassGroup,
+                                     forColumn: Int.random(in: 0...15),
+                                     row: Int.random(in: 0...11))
+            }
+        }
+        let fadeOutAction = SKAction.fadeOut(withDuration: 0.25)
+        let fadeInAction = SKAction.fadeIn(withDuration: 0.25)
+        let sequenceAction = SKAction.sequence([waitAction, fadeOutAction, runAction, fadeInAction])
+        let repeatAction = SKAction.repeatForever(sequenceAction)
+        tileMap.run(repeatAction)
+
+
     }
+
 }
